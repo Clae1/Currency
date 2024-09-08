@@ -1,12 +1,14 @@
 public class Main 
 {
     public static int size; 
-    public static float[][] newGraph;
+    public static double[][] newGraph;
+    public static double[][] updatedGraph;
 
-    public float[][] setupGraph(float[][] inputGraph)
+    //Will copy the inputted graph into a new graph
+    public double[][] setupGraph(double[][] inputGraph)
     {
         size = inputGraph.length;
-        newGraph = new float[size][size];
+        newGraph = new double[size][size];
         
         for (int i = 0; i < size; i++)
         {
@@ -25,14 +27,52 @@ public class Main
         return newGraph;
     }
 
+    //Add new function for floyd-warshall algorithm
+    public double[][] floydAlgorithm(double[][] newGraph)
+    {
+        double[][] shortGraph = new double[size][size];
+        for (int i = 0; i < size; ++i) 
+        {
+            for (int j = 0; j < size; ++j) 
+            {
+                shortGraph[i][j] = newGraph[i][j];
+            }
+        }
+
+        for (int k = 0; k < size; k++)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    shortGraph[i][j] = Math.min(shortGraph[i][j], shortGraph[i][k] + shortGraph[k][j]);
+                }
+            }
+        }
+        return shortGraph;
+    }
+
+    //Prints the adjaency matrix 
+    void printGraph(double[][] newGraph)
+    {
+        for (int i = 0; i < size; ++i) 
+        {
+            for (int j = 0; j < size; ++j) 
+            {
+                System.out.print(newGraph[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args) 
     {
         Main getGraph = new Main();
 
         //Around here is where we have the printf and scanf statements 
-        //to all for user input for the graph. 
+        //to all user inputs for the graph. 
         //Here is where we have the input test 
-        float[][] graph = {
+        double[][] graph = {
             {0, 3, 8, 0, -4},
             {0, 0, 0, 1, 7},
             {0, 4, 0, 5, 11},
@@ -45,13 +85,13 @@ public class Main
         getGraph.setupGraph(graph);
 
         // Print the adjacency matrix
-        for (int i = 0; i < size; ++i) 
-        {
-            for (int j = 0; j < size; ++j) 
-            {
-                System.out.print(newGraph[i][j] + " ");
-            }
-            System.out.println();
-        }
+        getGraph.printGraph(newGraph);
+
+        //Here we must implement the floyd-warshall algorithm 
+        //by creating a new function that will take in the newGraph 
+        //and retrun a float adjanecy matrix with the shortest paths.
+        updatedGraph = getGraph.floydAlgorithm(newGraph);
+        System.out.println("\n");
+        getGraph.printGraph(updatedGraph);
     }
 }
