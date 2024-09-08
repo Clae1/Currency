@@ -1,14 +1,12 @@
 public class Main 
 {
     public static int size; 
-    public static double[][] newGraph;
-    public static double[][] updatedGraph;
 
     //Will copy the inputted graph into a new graph
     public double[][] setupGraph(double[][] inputGraph)
     {
         size = inputGraph.length;
-        newGraph = new double[size][size];
+        double[][] newGraph = new double[size][size];
         
         for (int i = 0; i < size; i++)
         {
@@ -22,6 +20,10 @@ public class Main
                 {
                     newGraph[i][j] = inputGraph[i][j];
                 }
+                else
+                {
+                    newGraph[i][j] = Double.POSITIVE_INFINITY; 
+                }
             }
         }
         return newGraph;
@@ -31,6 +33,7 @@ public class Main
     public double[][] floydAlgorithm(double[][] newGraph)
     {
         double[][] shortGraph = new double[size][size];
+
         for (int i = 0; i < size; ++i) 
         {
             for (int j = 0; j < size; ++j) 
@@ -45,7 +48,10 @@ public class Main
             {
                 for (int j = 0; j < size; j++)
                 {
-                    shortGraph[i][j] = Math.min(shortGraph[i][j], shortGraph[i][k] + shortGraph[k][j]);
+                    if (shortGraph[i][k] + shortGraph[k][j] < shortGraph[i][j])
+                    {
+                        shortGraph[i][j] = shortGraph[i][k] + shortGraph[k][j];
+                    }
                 }
             }
         }
@@ -53,13 +59,20 @@ public class Main
     }
 
     //Prints the adjaency matrix 
-    void printGraph(double[][] newGraph)
+    void printGraph(double[][] graph)
     {
         for (int i = 0; i < size; ++i) 
         {
             for (int j = 0; j < size; ++j) 
             {
-                System.out.print(newGraph[i][j] + " ");
+                if (graph[i][j] == Double.POSITIVE_INFINITY)
+                {
+                    System.out.print("INF");
+                }
+                else
+                {
+                    System.out.print(graph[i][j] + " ");
+                }
             }
             System.out.println();
         }
@@ -82,16 +95,17 @@ public class Main
 
         //To input the user inputgraph into setup graph.
         //This will copy the inputgraph into a new graph
-        getGraph.setupGraph(graph);
-
+        double[][] newGraph = getGraph.setupGraph(graph);
+        
         // Print the adjacency matrix
+        System.out.println("Intial Graph");
         getGraph.printGraph(newGraph);
 
         //Here we must implement the floyd-warshall algorithm 
         //by creating a new function that will take in the newGraph 
         //and retrun a float adjanecy matrix with the shortest paths.
-        updatedGraph = getGraph.floydAlgorithm(newGraph);
-        System.out.println("\n");
+        double[][] updatedGraph = getGraph.floydAlgorithm(newGraph);
+        System.out.println("\nUpdated graph with shortest path");
         getGraph.printGraph(updatedGraph);
     }
 }
