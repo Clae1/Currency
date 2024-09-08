@@ -58,16 +58,34 @@ public class Main
         return shortGraph;
     }
 
+    //Finding if the graph has a negative cycle 
+    public boolean checkNegativeCycle(double[][] graph)
+    {
+        for (int i = 0; i < size; ++i) 
+        {
+            for (int j = 0; j < size; ++j) 
+            {
+                if (graph[i][j] > 0)
+                {
+                    System.out.println("There is a negative cycle");
+                    return true; 
+                }
+            }
+        }
+        return true; 
+    }
+
     //Prints the adjaency matrix 
     void printGraph(double[][] graph)
     {
+        System.out.println("A   B    C   D    E");
         for (int i = 0; i < size; ++i) 
         {
             for (int j = 0; j < size; ++j) 
             {
                 if (graph[i][j] == Double.POSITIVE_INFINITY)
                 {
-                    System.out.print("INF");
+                    System.out.print("INF ");
                 }
                 else
                 {
@@ -84,7 +102,9 @@ public class Main
 
         //Around here is where we have the printf and scanf statements 
         //to all user inputs for the graph. 
+        
         //Here is where we have the input test 
+        //test 1, no negative cycle
         double[][] graph = {
             {0, 3, 8, 0, -4},
             {0, 0, 0, 1, 7},
@@ -92,6 +112,14 @@ public class Main
             {2, 5, -5, 0, -2},
             {0, 0, 0, 6, 0}
         };
+
+        //test 2, there is a negative cycle 
+        // double[][] graph = {
+        //     {0, 1, 0, 0},
+        //     {0, 0, -1, 1},
+        //     {0, 0, 0, 3},
+        //     {-3, 0, 0, 0}
+        // };
 
         //To input the user inputgraph into setup graph.
         //This will copy the inputgraph into a new graph
@@ -107,5 +135,6 @@ public class Main
         double[][] updatedGraph = getGraph.floydAlgorithm(newGraph);
         System.out.println("\nUpdated graph with shortest path");
         getGraph.printGraph(updatedGraph);
+        getGraph.checkNegativeCycle(updatedGraph);
     }
 }
