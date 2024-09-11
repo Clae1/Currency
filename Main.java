@@ -3,14 +3,14 @@ public class Main
 {
     public static void main(String[] args) 
     {
-        //Here is where we have the input test 
-        //test 1, no negative cycle
+        //Test 1, has no negative cycles 
+        //Exchange rates collected from XE personal at 1:40am 
         double[][] graph1 = {
-            {0, 3, 8, 0, -4},
-            {0, 0, 0, 1, 7},
-            {0, 4, 0, 0, 0},
-            {2, 0, -5, 0, 0},
-            {0, 0, 0, 6, 0}
+            {0, 0.61, 0.92, 0, 0.47}, //NZD
+            {0, 0, 0, 1.35, 0.76},    //USD
+            {0, 0.66, 0, 0, 0},       //AUD
+            {1.19, 0, 1.10, 0, 0},    //CAD
+            {0, 0, 0.63, 1.77, 0}        //GBP
         };
 
         //test 2, there is a negative cycle 
@@ -32,14 +32,14 @@ public class Main
         };
 
         double[][] graph4 = {
-            //    0   1   2  3  4  5  6
-                { 0,  2,  0,  0, 0, 0, 2},
-                { 0,  0,  0, -1, 0, 0, 0},
-                {-3,  1,  0,  0, 0, 0, 3},
-                { 4,  0,  4,  0, 0, 2, 0},
-                { 0,  0,  4,  0, 0, 0, 0},
-                { 0,  0,  5,  0, 2, 0, 0},
-                { 0,  0,  0,  0, 0, 0, 0},
+            //    NZD  USD  AUD  CAD GBP SDP YEN
+                { 0,   2,   0,   0,  0,  0,  2},
+                { 0,   0,   0,  -1,  0,  0,  0},
+                {-3,   1,   0,   0,  0,  0,  3},
+                { 4,   0,   4,   0,  0,  2,  0},
+                { 0,   0,   4,   0,  0,  0,  0},
+                { 0,   0,   5,   0,  2,  0,  0},
+                { 0,   0,   0,   0,  0,  0,  0},
             };
 
 
@@ -60,7 +60,7 @@ public class Main
                         System.out.println("\nDemo Exchange");
 
                         Demo demo1 = new Demo(); //Test 1 graph 
-                        demo1.testDemo(graph1, 2, 4);
+                        demo1.testDemo(graph1, 0, 3);
 
                         Demo demo2 = new Demo(); //Test 2 graph 
                         demo2.testDemo(graph2, 0, 2);
