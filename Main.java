@@ -1,140 +1,95 @@
+import java.util.Scanner;
 public class Main 
 {
-    public static int size; 
-
-    //Will copy the inputted graph into a new graph
-    public double[][] setupGraph(double[][] inputGraph)
-    {
-        size = inputGraph.length;
-        double[][] newGraph = new double[size][size];
-        
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                if (i == j)
-                {
-                    newGraph[i][j] = 0;
-                }
-                else if (inputGraph[i][j] != 0)
-                {
-                    newGraph[i][j] = inputGraph[i][j];
-                }
-                else
-                {
-                    newGraph[i][j] = Double.POSITIVE_INFINITY; 
-                }
-            }
-        }
-        return newGraph;
-    }
-
-    //Add new function for floyd-warshall algorithm
-    public double[][] floydAlgorithm(double[][] newGraph)
-    {
-        double[][] shortGraph = new double[size][size];
-
-        for (int i = 0; i < size; ++i) 
-        {
-            for (int j = 0; j < size; ++j) 
-            {
-                shortGraph[i][j] = newGraph[i][j];
-            }
-        }
-
-        for (int k = 0; k < size; k++)
-        {
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    if (shortGraph[i][k] + shortGraph[k][j] < shortGraph[i][j])
-                    {
-                        shortGraph[i][j] = shortGraph[i][k] + shortGraph[k][j];
-                    }
-                }
-            }
-        }
-        return shortGraph;
-    }
-
-    //Finding if the graph has a negative cycle 
-    public boolean checkNegativeCycle(double[][] graph)
-    {
-        for (int i = 0; i < size; ++i) 
-        {
-            for (int j = 0; j < size; ++j) 
-            {
-                if (graph[i][j] > 0)
-                {
-                    System.out.println("There is a negative cycle");
-                    return true; 
-                }
-            }
-        }
-        return true; 
-    }
-
-    //Prints the adjaency matrix 
-    void printGraph(double[][] graph)
-    {
-        System.out.println("A   B    C   D    E");
-        for (int i = 0; i < size; ++i) 
-        {
-            for (int j = 0; j < size; ++j) 
-            {
-                if (graph[i][j] == Double.POSITIVE_INFINITY)
-                {
-                    System.out.print("INF ");
-                }
-                else
-                {
-                    System.out.print(graph[i][j] + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
     public static void main(String[] args) 
     {
-        Main getGraph = new Main();
+        //Graph 1 has a path with arbitrage opportunity, 
+        //Exchange rates collected from XE personal at 1:40am 
+        double[][] graph1 = {
+            {0, 0.61, 0.92, 0, 0.47}, //NZD
+            {0, 0, 0, 1.35, 0.76},    //USD
+            {0, 0.66, 0, 0, 0},       //AUD
+            {1.19, 0, 1.10, 0, 0},    //CAD
+            {0, 0, 0, 1.77, 0}        //GBP
+        };
+
+        //test 2, has a negative cycle or arbitrage opportunity
+        //Exchange rates collected from XE personal at 4:22am
+        double[][] graph2 = {
+            {0, 0.61, 0, 0, 0, 0},
+            {0, 0, 1.49, 0, 0, 0},
+            {0, 0, 0, 1.5, 0.51, 0.87},
+            {1.19, 0.73, 0, 0, 0, 0},
+            {0, 0, 0, 1.77, 0, 0},
+            {0, 0, 0, 0, 0.58, 0},
+        };
+
+        //test 3, has a negative cycle or arbitrage opportunity 
+        //Exchange rates collected from XE personal at 2:00am
+        double[][] graph3 = {
+            {0, 0.61, 0, 0, 0.47, 0, 0, 0},      //nzd
+            {0, 0, 1.49, 1.35, 0, 0, 0, 56.10},  //usd
+            {0, 0, 0, 0, 0, 0.87, 95.0, 0},      //aud 
+            {1.19, 0, 0, 0, 0.56, 0, 0, 0},      //cad
+            {0, 0, 0, 1.77, 0, 0, 185.0, 0},     //gbp
+            {0, 0, 0, 0, 0, 0, 0, 43.01},        //sgd
+            {0, 0, 0, 0, 0.5, 0.91, 0, 0},       //jpy
+            {0, 0, 0.2, 0, 0, 0, 0.2, 0},        //php
+        };
 
         //Around here is where we have the printf and scanf statements 
         //to all user inputs for the graph. 
+        Scanner obj = new Scanner(System.in);
+        System.out.println("_______________________________________________________");
+        System.out.println("Welcome to Currency Exchange");
+        System.out.println("1. Demo exchange");
+        System.out.println("\nInput Choice here:");
         
-        //Here is where we have the input test 
-        //test 1, no negative cycle
-        double[][] graph = {
-            {0, 3, 8, 0, -4},
-            {0, 0, 0, 1, 7},
-            {0, 4, 0, 5, 11},
-            {2, 5, -5, 0, -2},
-            {0, 0, 0, 6, 0}
-        };
+        boolean success = false;
+        while (!success) {
+            try {
+                int number = obj.nextInt();
+                switch (number) {
+                    case 1:
+                        System.out.println("\nDemo Exchange");
 
-        //test 2, there is a negative cycle 
-        // double[][] graph = {
-        //     {0, 1, 0, 0},
-        //     {0, 0, -1, 1},
-        //     {0, 0, 0, 3},
-        //     {-3, 0, 0, 0}
-        // };
+                        //Testing graph 1 
+                        Demo demo1 = new Demo();
+                        demo1.testDemo(graph1, 0, 1); //Test 1
+                        demo1.testDemo(graph1, 1, 0); //Test 2
+                        demo1.testDemo(graph1, 2, 3); //Test 3
+                        demo1.testDemo(graph1, 3, 4); //Test 4
+                        demo1.testDemo(graph1, 4, 2); //Test 5
 
-        //To input the user inputgraph into setup graph.
-        //This will copy the inputgraph into a new graph
-        double[][] newGraph = getGraph.setupGraph(graph);
-        
-        // Print the adjacency matrix
-        System.out.println("Intial Graph");
-        getGraph.printGraph(newGraph);
 
-        //Here we must implement the floyd-warshall algorithm 
-        //by creating a new function that will take in the newGraph 
-        //and retrun a float adjanecy matrix with the shortest paths.
-        double[][] updatedGraph = getGraph.floydAlgorithm(newGraph);
-        System.out.println("\nUpdated graph with shortest path");
-        getGraph.printGraph(updatedGraph);
-        getGraph.checkNegativeCycle(updatedGraph);
+                        //Testing graph 2
+                        Demo demo2 = new Demo();
+                        demo2.testDemo(graph2, 0, 1); //Test 6
+                        demo2.testDemo(graph2, 5, 3); //Test 7
+                        demo2.testDemo(graph2, 0, 3); //Test 8
+                        demo2.testDemo(graph2, 1, 3); //Test 9
+
+                        //Testing graph 3
+                        Demo demo3 = new Demo(); 
+                        demo3.testDemo(graph3, 0, 3); //Test 10
+                        demo3.testDemo(graph3, 7, 4); //Test 11
+                        demo3.testDemo(graph3, 5, 0); //Test 12
+                        demo3.testDemo(graph3, 2, 7); //Test 13
+                        demo3.testDemo(graph3, 2, 1); //Test 13
+
+                        success = true;
+                        break;
+                    
+                    default:
+                        System.out.println("!!!Please Input a Integer: 1!!!");
+                        break;
+                }
+            } 
+            catch (Exception e) {
+                System.out.println("Please Input a Integer 1 or 2!!!!");
+                obj.next();
+            }
+        }
+        obj.close();
     }
 }
