@@ -2,6 +2,7 @@ public class Functions {
     public static int size;
     public static int[][] path;
     public static double[][] pathRate; 
+    public static boolean cycleChecker;
 
     // Will copy the inputted graph into a new graph
     public double[][] setupGraph(double[][] inputGraph) {
@@ -69,7 +70,7 @@ public class Functions {
     }
 
     // Finding if the graph has a negative cycle
-    public boolean checkNegativeCycle(double[] pathValue) 
+    public boolean checkNegativeCycle(double[] pathValue, double[][] graph, int start, int end) 
     {
         double negativeLog = 0.0;
         
@@ -81,15 +82,26 @@ public class Functions {
             }
         }
 
-        //If the condition is true then there is arbitrage opportunity,
-        //then return true 
-        if (negativeLog < 0)
+        for (int i = 0; i < graph.length; i++)
         {
-            return true;
+            for (int j = 0; j < graph.length; j++)
+            {
+                if (graph[end][start] > 0)
+                {
+                    //If the condition is true then there is arbitrage opportunity,
+                    //then return true 
+                    if (negativeLog < 0)
+                    {
+                        cycleChecker = true;
+                        return true;
+                    }
+                }
+            }
         }
 
         //If the condition above is not fulfilled,
         //then return false to indicate there is no arbitrage opportunity
+        cycleChecker = false;
         return false;
     }
 
@@ -115,13 +127,13 @@ public class Functions {
 
     // Construct a path that shows the shortest path from starting node to
     // end node.
-    public String[] pathCreation(int start, int end, double[][] graph, double[] pathValue)
+    public String[] pathCreation(int start, int end, double[][] shortGraph, double[] pathValue, double[][] graph)
     {
         String[] tempPath = new String[size];
 
         //Will return an empty path to suggest that there is no path 
         //connecting the start and end node
-        if (graph[start][end] == Double.POSITIVE_INFINITY) 
+        if (shortGraph[start][end] == Double.POSITIVE_INFINITY) 
         {
             return tempPath;
         }
@@ -135,31 +147,16 @@ public class Functions {
             position++;
         }
 
-        if (checkNegativeCycle(pathValue) == false)
+        if (cycleChecker == false)
         {
             tempPath[position] = numberConverter(end);
         }
 
-        else if (checkNegativeCycle(pathValue) == true)
+        else if (cycleChecker == true)
         {
             tempPath[position] = numberConverter(current);
         }
         return tempPath;
-    }
-
-    void findingExchangeValue(int start, int end, double[][] graph)
-    {
-        double exchangeValue = 0.0;
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) 
-            {
-                if (graph[i][j] == graph[start][end])
-                {
-                    exchangeValue = graph[i][j];
-                }
-            }
-        }
-        System.out.println("\nBest conversion rate: " + exchangeValue);
     }
 
     public String numberConverter(int number) {
@@ -174,11 +171,11 @@ public class Functions {
                 break;
                 
             case 2:
-            convert = "AUS";
+            convert = "AUD";
                 break;
 
             case 3:
-            convert = "CAN";
+            convert = "CAD";
                 break;
                 
             case 4:
@@ -186,11 +183,11 @@ public class Functions {
                 break;
                 
             case 5:
-            convert = "SDP";
+            convert = "SGD";
                 break;
 
             case 6:
-            convert = "YEN";
+            convert = "JPY";
                 break;
 
             case 7:
@@ -201,6 +198,36 @@ public class Functions {
                 break;
         }
         return convert;
+    }
+
+    void findingExchangeValue(int start, int end, double[][] graph)
+    {
+        double exchangeValue = 0.0;
+        String startCurrency = numberConverter(start);
+        String endCurrency = numberConverter(end);
+
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) 
+            {
+                if (graph[i][j] == graph[start][end])
+                {
+                    exchangeValue = graph[i][j];
+                }
+            }
+        }
+        System.out.println("\nBest conversion rate from " + startCurrency + " to " +  endCurrency + ": " + exchangeValue);
+    }
+
+    public double findingAbitrageValue(double[] pathValue) {
+        double value = 1.0;
+        for (int i = 0; i < pathRate.length; i++)
+        {
+            if (pathValue[i] != 0)
+            {
+                value *= pathValue[i];
+            }
+        }
+        return value;
     }
 
     // Prints the adjaency matrix
@@ -232,7 +259,10 @@ public class Functions {
                     System.out.print("->");
                 }
             }
-             
+        }
+        if (cycleChecker == true)
+        {
+            System.out.println("->"+pathCurrency[0]);
         }
     }
 
