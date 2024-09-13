@@ -43,7 +43,8 @@ public class Main
         System.out.println("_______________________________________________________");
         System.out.println("Welcome to Currency Exchange");
         System.out.println("1. Demo exchange");
-        System.out.println("\nInput Choice here:");
+        System.out.println("2. Manual input currency exchange");
+        System.out.println("\nInput Choice here 1 or 2 :");
         
         boolean success = false;
         while (!success) {
@@ -79,7 +80,13 @@ public class Main
 
                         success = true;
                         break;
-                    
+
+                    case 2:
+                        User user = new User();
+                        user.testUser();
+                        success = true;
+                        break;
+                
                     default:
                         System.out.println("!!!Please Input a Integer: 1!!!");
                         break;
